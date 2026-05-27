@@ -24,3 +24,17 @@ def verify_credentials(email: str, api_token: str, domain: str) -> dict:
     if resp.status_code == 200:
         return resp.json()
     _raise_api_error(resp)
+
+
+def list_assigned_issues(email: str, api_token: str, domain: str, max_results: int = 50) -> list[dict]:
+    """Return issues assigned to the current user, ordered by last update."""
+    params = {
+        "jql": "assignee = currentUser() ORDER BY updated DESC",
+        "maxResults": max_results,
+        "fields": "summary,status,priority,issuetype,updated",
+    }
+    with _client(email, api_token) as client:
+        resp = client.get(f"{_base_url(domain)}/search", params=params)
+    if resp.status_code == 200:
+        return resp.json().get("issues", [])
+    _raise_api_error(resp)

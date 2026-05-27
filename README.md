@@ -38,7 +38,31 @@ All three CLIs share a single credential store at `~/.config/atlassian-tools/cre
 
 ![Name and expiry](docs/images/api-token-name.png)
 
-**3.** Select the products you use (Bitbucket, Jira, Confluence) and grant Read + Write scopes.
+**3.** Select each product you use and grant the scopes listed below.
+
+#### Bitbucket
+
+| Scope category | Permission |
+|---|---|
+| Account | Read |
+| Repositories | Read |
+| Pull requests | Read, Write |
+
+#### Jira
+
+| Scope category | Permission |
+|---|---|
+| View user data | Read |
+| View Jira issue data | Read |
+
+#### Confluence
+
+| Scope category | Permission |
+|---|---|
+| View user data | Read |
+| View Confluence content | Read |
+
+Grant only the scopes for the products you actually use. You can create separate tokens per product if you prefer tighter scoping.
 
 **4.** Copy the token — it is only shown once.
 
@@ -124,6 +148,7 @@ More commands coming soon.
 | `jira auth login` | Authenticate with Atlassian (shared) |
 | `jira auth status` | Show stored credentials |
 | `jira auth logout` | Remove stored credentials |
+| `jira list -a` | List issues assigned to you |
 | `cfl auth login` | Authenticate with Atlassian (shared) |
 | `cfl auth status` | Show stored credentials |
 | `cfl auth logout` | Remove stored credentials |
