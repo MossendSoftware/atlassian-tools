@@ -26,21 +26,23 @@ then restart your shell.
 
 ## Authentication
 
-All three CLIs share a single credential store at `~/.config/atlassian-tools/credentials.yaml` (mode `600`). You only need to log in once — credentials are reused by every tool.
+Credentials are stored at `~/.config/atlassian-tools/credentials.yaml` (mode `600`). Each CLI has its own `auth login` command because **Bitbucket only allows one app per API token** — you need a separate token for each product.
 
-### Creating an API token
+### Creating API tokens
 
-**1.** Go to <https://id.atlassian.com/manage-profile/security/api-tokens> and click **Create API token with Scopes**.
+Go to <https://id.atlassian.com/manage-profile/security/api-tokens> and click **Create API token with Scopes** for each product you use.
 
 ![API Tokens page](docs/images/api-tokens-page.png)
 
-**2.** Give the token a name (e.g. `atlassian-tools`) and set an expiry date (maximum 365 days).
+Give each token a clear name (e.g. `atlassian-tools-bb`) and set an expiry date (maximum 365 days).
 
 ![Name and expiry](docs/images/api-token-name.png)
 
-**3.** Select each product you use and grant the scopes listed below.
+Select the app and grant the scopes listed below for each token.
 
-#### Bitbucket
+#### Bitbucket token
+
+Select **Bitbucket** as the app.
 
 | Scope category | Permission |
 |---|---|
@@ -48,48 +50,46 @@ All three CLIs share a single credential store at `~/.config/atlassian-tools/cre
 | Repositories | Read |
 | Pull requests | Read, Write |
 
-#### Jira
+#### Jira token
+
+Select **Jira** as the app.
 
 | Scope category | Permission |
 |---|---|
 | View user data | Read |
 | View Jira issue data | Read |
 
-#### Confluence
+#### Confluence token
+
+Select **Confluence** as the app.
 
 | Scope category | Permission |
 |---|---|
 | View user data | Read |
 | View Confluence content | Read |
 
-Grant only the scopes for the products you actually use. You can create separate tokens per product if you prefer tighter scoping.
-
-**4.** Copy the token — it is only shown once.
-
 ### Logging in
 
-Run the `auth login` command from any of the three CLIs — they all do the same thing:
+Run `auth login` for each product you want to use. Each command only asks for that product's token.
 
 ```bash
-bb auth login
-# or: jira auth login
-# or: cfl auth login
+bb auth login      # prompts: email, Bitbucket token
+jira auth login    # prompts: email, Jira token, Atlassian domain
+cfl auth login     # prompts: email, Confluence token, Atlassian domain
 ```
 
-You will be prompted for:
+All three write into the same `credentials.yaml` file, so running them in any order builds up credentials incrementally.
 
-| Prompt | Notes |
-|---|---|
-| Email | Your Atlassian account email |
-| API token | The token you just created |
-| Atlassian domain | Your site name, e.g. `mycompany` for `mycompany.atlassian.net` — required for jira/cfl, optional for bb-only users |
+**Atlassian domain** is your site name — e.g. `mycompany` for `mycompany.atlassian.net`. It is shared between jira and cfl.
 
 ### Other auth commands
 
 ```bash
-bb auth status    # show stored credentials
-bb auth logout    # remove stored credentials
+bb auth status     # show which tools are configured
+bb auth logout     # remove all saved credentials
 ```
+
+`status` and `logout` are identical across all three CLIs.
 
 ## Usage
 

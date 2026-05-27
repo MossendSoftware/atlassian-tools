@@ -1,5 +1,5 @@
 import click
-from atlassian_tools.shared.commands.auth import auth
+from atlassian_tools.bb.commands.auth import auth
 from atlassian_tools.bb.commands.pr import pr
 
 

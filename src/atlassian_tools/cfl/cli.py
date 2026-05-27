@@ -1,5 +1,5 @@
 import click
-from atlassian_tools.shared.commands.auth import auth
+from atlassian_tools.cfl.commands.auth import auth
 
 
 @click.group()

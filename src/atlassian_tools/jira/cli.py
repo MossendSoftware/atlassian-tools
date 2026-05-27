@@ -1,5 +1,5 @@
 import click
-from atlassian_tools.shared.commands.auth import auth
+from atlassian_tools.jira.commands.auth import auth
 from atlassian_tools.jira.commands.issues import list_issues
 
 

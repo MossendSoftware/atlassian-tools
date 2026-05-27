@@ -78,7 +78,7 @@ def create():
     try:
         pr_data = api.create_pull_request(
             email=creds["email"],
-            api_token=creds["api_token"],
+            api_token=creds["bb_token"],
             workspace=ctx.workspace,
             repo_slug=ctx.repo_slug,
             title=title,

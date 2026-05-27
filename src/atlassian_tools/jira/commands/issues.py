@@ -35,7 +35,7 @@ def list_issues(assigned: bool, limit: int):
     try:
         issues = api.list_assigned_issues(
             email=creds["email"],
-            api_token=creds["api_token"],
+            api_token=creds["jira_token"],
             domain=domain,
             max_results=limit,
         )

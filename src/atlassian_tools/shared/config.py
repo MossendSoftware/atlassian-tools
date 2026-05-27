@@ -4,10 +4,15 @@ Credentials are stored at ~/.config/atlassian-tools/credentials.yaml (mode 600).
 
 Schema
 ------
-email: str
-api_token: str
-atlassian_domain: str | None   # e.g. "mycompany" for mycompany.atlassian.net
-                                # required for jira / cfl, not used by bb
+email: str                  # Atlassian account email (shared across all tools)
+atlassian_domain: str       # e.g. "mycompany" for mycompany.atlassian.net
+                            #   required for jira / cfl, not used by bb
+bb_token: str               # API token scoped to Bitbucket only
+jira_token: str             # API token scoped to Jira only
+cfl_token: str              # API token scoped to Confluence only
+
+Each token is created separately at id.atlassian.com — Bitbucket only allows
+one app per token, so bb_token, jira_token, and cfl_token must be distinct.
 """
 
 from pathlib import Path
