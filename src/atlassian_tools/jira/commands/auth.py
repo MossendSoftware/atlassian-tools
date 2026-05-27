@@ -30,10 +30,7 @@ def login():
 
     email = click.prompt("Email")
     jira_token = click.prompt("Jira API token", hide_input=True)
-    domain = click.prompt(
-        "Atlassian domain",
-        help="Your site name — e.g. 'mycompany' for mycompany.atlassian.net",
-    )
+    domain = click.prompt("Atlassian domain (e.g. 'mycompany' for mycompany.atlassian.net)")
 
     console.print("\n[dim]Verifying token...[/dim]")
     try:
