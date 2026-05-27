@@ -4,8 +4,9 @@ import os
 import click
 from rich.console import Console
 
-from bbcli import api, config
-from bbcli.git_context import get_git_context, branch_name_to_title
+from atlassian_tools.bb import api
+from atlassian_tools.shared import config
+from atlassian_tools.bb.git_context import get_git_context, branch_name_to_title
 
 console = Console()
 

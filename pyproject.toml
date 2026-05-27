@@ -1,7 +1,7 @@
 [project]
-name = "bbcli"
+name = "atlassian-tools"
 version = "0.1.0"
-description = "A fast, git-context-aware Bitbucket CLI"
+description = "Fast Atlassian CLIs for Bitbucket (bb), Jira (jira), and Confluence (cfl)"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
@@ -11,7 +11,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Topic :: Software Development :: Version Control",
+    "Topic :: Software Development",
 ]
 dependencies = [
     "click>=8.3.2",
@@ -21,10 +21,12 @@ dependencies = [
 ]
 
 [project.scripts]
-bb = "bbcli.cli:cli"
+bb   = "atlassian_tools.bb.cli:cli"
+jira = "atlassian_tools.jira.cli:cli"
+cfl  = "atlassian_tools.cfl.cli:cli"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/bbcli"]
+packages = ["src/atlassian_tools"]
 
 [build-system]
 requires = ["hatchling"]

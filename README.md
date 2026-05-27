@@ -1,8 +1,8 @@
-# bbcli
+# atlassian-tools
 
-A fast, git-context-aware Bitbucket CLI for day-to-day developer workflows. Run common Bitbucket operations — authenticate, create pull requests, and more — without leaving the terminal.
+Fast, terminal-native CLIs for Atlassian products — **`bb`** (Bitbucket), **`jira`** (Jira), and **`cfl`** (Confluence). Run common Atlassian operations without leaving the terminal.
 
-Built with [Click](https://click.palletsprojects.com/) and [Rich](https://github.com/Textualize/rich). Credentials are stored locally; no third-party service is involved.
+Built with [Click](https://click.palletsprojects.com/) and [Rich](https://github.com/Textualize/rich). One shared credential store; no third-party service involved.
 
 ## Requirements
 
@@ -11,22 +11,22 @@ Built with [Click](https://click.palletsprojects.com/) and [Rich](https://github
 ## Installation
 
 ```bash
-git clone https://github.com/MossendSoftware/bbcli
-cd bbcli
+git clone https://github.com/MossendSoftware/atlassian-tools
+cd atlassian-tools
 make install
 ```
 
-This installs `bb` as an isolated tool into `~/.local/bin`. If that directory is not yet on your `PATH`, run:
+This installs `bb`, `jira`, and `cfl` as isolated tools into `~/.local/bin`. If that directory is not on your `PATH`, run:
 
 ```bash
 uv tool update-shell
 ```
 
-then restart your shell. After that, `bb` is available anywhere.
+then restart your shell.
 
 ## Authentication
 
-bbcli authenticates against the Bitbucket API using your Atlassian email address and a scoped API token.
+All three CLIs share a single credential store at `~/.config/atlassian-tools/credentials.yaml` (mode `600`). You only need to log in once — credentials are reused by every tool.
 
 ### Creating an API token
 
@@ -34,37 +34,50 @@ bbcli authenticates against the Bitbucket API using your Atlassian email address
 
 ![API Tokens page](docs/images/api-tokens-page.png)
 
-**2.** Give the token a name (e.g. `BBCLI`) and set an expiry date (maximum 365 days).
+**2.** Give the token a name (e.g. `atlassian-tools`) and set an expiry date (maximum 365 days).
 
 ![Name and expiry](docs/images/api-token-name.png)
 
-**3.** Select **Bitbucket** as the app.
+**3.** Select the products you use (Bitbucket, Jira, Confluence) and grant Read + Write scopes.
 
-![Select app](docs/images/api-token-select-app.png)
+**4.** Copy the token — it is only shown once.
 
-**4.** Under **Scope actions**, check **Read** and **Write**, then click **Next** and create the token.
+### Logging in
 
-![Select scopes](docs/images/api-token-select-scopes.png)
-
-**5.** Copy the token — it is only shown once.
-
-### Saving credentials
+Run the `auth login` command from any of the three CLIs — they all do the same thing:
 
 ```bash
 bb auth login
+# or: jira auth login
+# or: cfl auth login
 ```
 
-You will be prompted for your Atlassian email and the token you just copied. Credentials are saved to `~/.config/bbcli/credentials.yaml` with mode `600`. To switch accounts, run `bb auth login` again.
+You will be prompted for:
+
+| Prompt | Notes |
+|---|---|
+| Email | Your Atlassian account email |
+| API token | The token you just created |
+| Atlassian domain | Your site name, e.g. `mycompany` for `mycompany.atlassian.net` — required for jira/cfl, optional for bb-only users |
+
+### Other auth commands
+
+```bash
+bb auth status    # show stored credentials
+bb auth logout    # remove stored credentials
+```
 
 ## Usage
 
-All commands must be run from inside a Bitbucket git repository (one whose `origin` remote points to `bitbucket.org`).
+### `bb` — Bitbucket
 
-### `bb auth login`
+All `bb` commands must be run from inside a Bitbucket git repository (origin remote points to `bitbucket.org`).
 
-Prompt for email and API token, verify them against the Bitbucket API, and save to disk.
+#### `bb auth login`
 
-### `bb pr create`
+Authenticate and save credentials (shared with jira and cfl).
+
+#### `bb pr create`
 
 Create a pull request from the current branch.
 
@@ -72,7 +85,7 @@ Create a pull request from the current branch.
 bb pr create
 ```
 
-bbcli reads the workspace, repository slug, current branch, and default branch directly from git. You are prompted for:
+Reads workspace, repository slug, current branch, and default branch from git. You are prompted for:
 
 | Prompt | Default |
 |---|---|
@@ -82,40 +95,77 @@ bbcli reads the workspace, repository slug, current branch, and default branch d
 
 Comment lines (`<!-- ... -->`) are stripped from the description before submission. If the description is left empty, you are asked to confirm before the PR is created.
 
+### `jira` — Jira
+
+```bash
+jira auth login    # authenticate (shared with bb and cfl)
+jira auth status   # show stored credentials
+```
+
+More commands coming soon.
+
+### `cfl` — Confluence
+
+```bash
+cfl auth login     # authenticate (shared with bb and jira)
+cfl auth status    # show stored credentials
+```
+
+More commands coming soon.
+
 ## Command reference
 
 | Command | Description |
 |---|---|
-| `bb auth login` | Save Bitbucket credentials to `~/.config/bbcli/credentials.yaml` |
+| `bb auth login` | Authenticate with Atlassian (shared) |
+| `bb auth status` | Show stored credentials |
+| `bb auth logout` | Remove stored credentials |
 | `bb pr create` | Create a PR from the current branch |
+| `jira auth login` | Authenticate with Atlassian (shared) |
+| `jira auth status` | Show stored credentials |
+| `jira auth logout` | Remove stored credentials |
+| `cfl auth login` | Authenticate with Atlassian (shared) |
+| `cfl auth status` | Show stored credentials |
+| `cfl auth logout` | Remove stored credentials |
 
 ## Development
 
 ### Setup
 
 ```bash
-git clone https://github.com/MossendSoftware/bbcli
-cd bbcli
+git clone https://github.com/MossendSoftware/atlassian-tools
+cd atlassian-tools
 make dev
 ```
 
 ### Project layout
 
 ```
-src/bbcli/
-  cli.py            # Entry point, registers command groups
-  api.py            # Bitbucket REST API client
-  config.py         # Credential load/save
-  git_context.py    # Git remote parsing and branch detection
-  commands/
-    auth.py         # bb auth *
-    pr.py           # bb pr *
+src/atlassian_tools/
+  shared/
+    config.py              # Credential load/save (~/.config/atlassian-tools/)
+    commands/
+      auth.py              # Shared auth group (login, logout, status)
+  bb/
+    cli.py                 # bb entry point
+    api.py                 # Bitbucket REST API client
+    git_context.py         # Git remote parsing and branch detection
+    commands/
+      pr.py                # bb pr *
+  jira/
+    cli.py                 # jira entry point
+    api.py                 # Jira REST API client
+  cfl/
+    cli.py                 # cfl entry point
+    api.py                 # Confluence REST API client
 ```
 
 ### Running locally
 
 ```bash
 uv run bb --help
+uv run jira --help
+uv run cfl --help
 ```
 
 ### Running tests

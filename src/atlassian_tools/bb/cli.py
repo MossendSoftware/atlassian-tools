@@ -1,6 +1,6 @@
 import click
-from bbcli.commands.auth import auth
-from bbcli.commands.pr import pr
+from atlassian_tools.shared.commands.auth import auth
+from atlassian_tools.bb.commands.pr import pr
 
 
 @click.group()
