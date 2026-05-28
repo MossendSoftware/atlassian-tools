@@ -1,8 +1,15 @@
 import httpx
 
 
+def _normalize_domain(domain: str) -> str:
+    domain = domain.strip().rstrip("/")
+    if domain.endswith(".atlassian.net"):
+        domain = domain[: -len(".atlassian.net")]
+    return domain
+
+
 def _base_url(domain: str) -> str:
-    return f"https://{domain}.atlassian.net/rest/api/3"
+    return f"https://{_normalize_domain(domain)}.atlassian.net/rest/api/3"
 
 
 def _client(email: str, api_token: str) -> httpx.Client:
