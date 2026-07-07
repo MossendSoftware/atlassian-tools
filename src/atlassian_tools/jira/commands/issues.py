@@ -11,7 +11,8 @@ console = Console()
 @click.command("list")
 @click.option("-a", "--assigned", is_flag=True, default=False, help="List tickets assigned to you.")
 @click.option("-n", "--limit", default=50, show_default=True, metavar="N", help="Maximum number of results.")
-def list_issues(assigned: bool, limit: int):
+@click.option("-s", "--status", default=None, metavar="STATUSES", help="Comma-separated status filter (e.g. 'In Progress, Done').")
+def list_issues(assigned: bool, limit: int, status: str | None):
     """List Jira issues."""
     if not assigned:
         console.print("\n[dim]Tip: use [bold]-a / --assigned[/bold] to list tickets assigned to you.[/dim]\n")
@@ -31,6 +32,8 @@ def list_issues(assigned: bool, limit: int):
         )
         raise SystemExit(1)
 
+    statuses = [s.strip() for s in status.split(",")] if status else None
+
     console.print("\n[dim]Fetching assigned issues...[/dim]")
     try:
         issues = api.list_assigned_issues(
@@ -38,6 +41,7 @@ def list_issues(assigned: bool, limit: int):
             api_token=creds["jira_token"],
             domain=domain,
             max_results=limit,
+            statuses=statuses,
         )
     except RuntimeError as e:
         console.print(f"\n[red]Error:[/red] {e}")

@@ -17,8 +17,8 @@ def auth():
 def login():
     """Save a Confluence API token to ~/.config/atlassian-tools/credentials.yaml.
 
-    Bitbucket only allows one app per API token, so this token must be
-    created with Confluence selected as the app — separate from your bb token.
+    Scoped API tokens are product-specific — create a token with Confluence
+    selected, or use a Classic API token which works across all products.
     """
     console.print("\n[bold]Confluence login[/bold]")
     console.print(
